@@ -1,2 +1,0 @@
-Exercise
-Create a very small application (CLI, web, etc.) to demonstrate that your software application can communicate with your PostgreSQL database. Choose your own programming language (e.g., Python) and database driver (e.g., psycopg), and refer to documentation (e.g., https://www.psycopg.org/docs/usage.html)
