@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DATA.DB.300 – Exam Trainer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Landing / Category Select -->
+    <header>
+      <h1>🗄️ DATA.DB.300 – Exam Trainer</h1>
+      <p class="subtitle">Database Systems: NoSQL — Closed-book multiple-choice practice</p>
+    </header>
+
+    <div id="stats-bar" class="stats-bar hidden">
+      <span id="stats-correct">✅ 0</span>
+      <span id="stats-wrong">❌ 0</span>
+      <span id="stats-remaining">📋 0 remaining</span>
+      <span id="stats-score">🎯 0%</span>
+      <button id="btn-back-to-menu" class="btn-small">← Menu</button>
+    </div>
+
+    <!-- Category Selection -->
+    <div id="menu-screen">
+      <h2>Choose a topic to practice</h2>
+      <p class="info-text">The exam has ~25% questions from each category. You need 50% to pass. 2 hours, closed-book.</p>
+      <div class="category-grid">
+        <button class="category-card" data-category="postgresql">
+          <span class="emoji">🐘</span>
+          <span class="label">PostgreSQL</span>
+          <span class="desc">JSONB, HSTORE, arrays, GIN indexes, fuzzy search, pg_trgm</span>
+        </button>
+        <button class="category-card" data-category="cassandra">
+          <span class="emoji">👁️</span>
+          <span class="label">Cassandra</span>
+          <span class="desc">Wide-column design, PRIMARY KEY, clustering, collections, TTL</span>
+        </button>
+        <button class="category-card" data-category="mongodb">
+          <span class="emoji">🍃</span>
+          <span class="label">MongoDB</span>
+          <span class="desc">CRUD, aggregation, $lookup, embed vs reference, sharding</span>
+        </button>
+        <button class="category-card" data-category="others">
+          <span class="emoji">🧩</span>
+          <span class="label">Others</span>
+          <span class="desc">Vectors (pgvector), database design principles, Docker, general NoSQL</span>
+        </button>
+        <button class="category-card category-card--all" data-category="all">
+          <span class="emoji">🎯</span>
+          <span class="label">Full Exam Simulation</span>
+          <span class="desc">Mixed questions from all topics — just like the real exam</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="hidden">
+      <div id="question-container">
+        <div class="question-header">
+          <span id="question-number" class="q-number">Q1</span>
+          <span id="question-category" class="q-category">PostgreSQL</span>
+        </div>
+        <div id="question-text" class="question-text"></div>
+        <div id="code-block" class="code-block hidden">
+          <pre><code id="code-content"></code></pre>
+        </div>
+        <div id="options-container" class="options-container"></div>
+        <div id="explanation-box" class="explanation-box hidden">
+          <strong>Explanation:</strong>
+          <p id="explanation-text"></p>
+        </div>
+        <div class="question-actions">
+          <button id="btn-next" class="btn-primary hidden">Next Question →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="hidden">
+      <div class="results-container">
+        <h2 id="results-title">Quiz Complete!</h2>
+        <div id="results-score" class="results-score"></div>
+        <div id="results-pass" class="results-pass"></div>
+        <div id="results-breakdown" class="results-breakdown"></div>
+        <div class="results-actions">
+          <button id="btn-retry" class="btn-primary">🔄 Retry Same Category</button>
+          <button id="btn-menu" class="btn-secondary">← Back to Menu</button>
+        </div>
+        <div id="review-section" class="review-section">
+          <h3>📝 Review Incorrect Answers</h3>
+          <div id="review-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
