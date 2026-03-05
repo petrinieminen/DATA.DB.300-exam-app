@@ -35,6 +35,7 @@
   let wrong = 0;
   let answered = false;
   let wrongAnswers = [];
+  let shuffledCorrectIndex = 0;
 
   // ── Category labels ──
   const LABELS = {
@@ -129,13 +130,18 @@
       codeContent.textContent = "";
     }
 
+    // Shuffle options and track correct answer's new position
+    const indexed = q.options.map((opt, i) => ({ text: opt, origIndex: i }));
+    const shuffled = shuffle(indexed);
+    shuffledCorrectIndex = shuffled.findIndex(o => o.origIndex === q.answer);
+
     // Options
     optionsContainer.innerHTML = "";
     const letters = ["A", "B", "C", "D", "E", "F"];
-    q.options.forEach((opt, i) => {
+    shuffled.forEach((opt, i) => {
       const btn = document.createElement("button");
       btn.className = "option-btn";
-      btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${escapeHtml(opt)}</span>`;
+      btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${escapeHtml(opt.text)}</span>`;
       btn.addEventListener("click", () => handleAnswer(i));
       optionsContainer.appendChild(btn);
     });
@@ -147,7 +153,12 @@
     answered = true;
 
     const q = questions[currentIndex];
-    const isCorrect = selected === q.answer;
+    const isCorrect = selected === shuffledCorrectIndex;
+
+    // Read displayed text from the rendered buttons
+    const buttons = optionsContainer.querySelectorAll(".option-btn");
+    const selectedText = buttons[selected].querySelector("span:last-child").textContent;
+    const correctText = buttons[shuffledCorrectIndex].querySelector("span:last-child").textContent;
 
     if (isCorrect) {
       correct++;
@@ -155,18 +166,17 @@
       wrong++;
       wrongAnswers.push({
         question: q.q,
-        yourAnswer: q.options[selected],
-        correctAnswer: q.options[q.answer],
+        yourAnswer: selectedText,
+        correctAnswer: correctText,
         explanation: q.explanation,
         category: q._category
       });
     }
 
     // Highlight options
-    const buttons = optionsContainer.querySelectorAll(".option-btn");
     buttons.forEach((btn, i) => {
       btn.classList.add("disabled");
-      if (i === q.answer) btn.classList.add("correct");
+      if (i === shuffledCorrectIndex) btn.classList.add("correct");
       if (i === selected && !isCorrect) btn.classList.add("wrong");
     });
 
