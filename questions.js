@@ -1080,5 +1080,93 @@ const QUESTIONS = {
       answer: 0,
       explanation: "Range queries (e.g., WHERE year >= 2020 AND year <= 2025) are efficient on clustering columns because data is sorted within a partition. On partition keys, they would require scanning all nodes, which is why ALLOW FILTERING exists (but shouldn't be used)."
     },
+    {
+      q: "What is the key difference between k-Nearest Neighbor (k-NN) and Approximate Nearest Neighbor (ANN)?",
+      options: [
+        "k-NN returns exact results by scanning all vectors (brute-force), while ANN uses index structures to return approximate results much faster",
+        "ANN always returns more accurate results than k-NN",
+        "k-NN only works with 2-dimensional data, while ANN works with any dimension",
+        "There is no difference — they are the same algorithm"
+      ],
+      answer: 0,
+      explanation: "k-NN (exact) compares the query vector against every vector in the dataset — guaranteed correct but O(n) and slow for large datasets. ANN (approximate) uses index structures like HNSW or IVFFlat to find results much faster, trading a small amount of accuracy for massive speed gains."
+    },
+    {
+      q: "Why might you prefer ANN over exact k-NN for similarity search?",
+      options: [
+        "ANN always gives perfectly accurate results",
+        "ANN is dramatically faster for large datasets because it avoids scanning every vector, at the cost of slightly less accurate results",
+        "k-NN cannot handle vector data",
+        "ANN uses less storage space than k-NN"
+      ],
+      answer: 1,
+      explanation: "Exact k-NN requires comparing against all N vectors (O(n)). For millions of high-dimensional vectors, this is prohibitively slow. ANN indexes like HNSW reduce search to O(log n) with results that are usually 95-99% as accurate — a very worthwhile trade-off."
+    },
+    {
+      q: "Which pgvector index types provide Approximate Nearest Neighbor (ANN) search?",
+      options: [
+        "B-tree and GIN",
+        "HNSW and IVFFlat",
+        "Hash and GiST",
+        "BRIN and SP-GiST"
+      ],
+      answer: 1,
+      explanation: "pgvector supports two ANN index types: HNSW (Hierarchical Navigable Small World) — a graph-based index with excellent recall, and IVFFlat (Inverted File with Flat quantization) — a clustering-based index that partitions vectors into lists. Both trade exact accuracy for speed."
+    },
+    {
+      q: "How does HNSW (Hierarchical Navigable Small World) index work conceptually?",
+      options: [
+        "It hashes all vectors into buckets based on their values",
+        "It builds a multi-layer graph where upper layers have long-range connections for fast navigation and lower layers have short-range connections for precision",
+        "It sorts vectors alphabetically and uses binary search",
+        "It compresses vectors into single scalar values"
+      ],
+      answer: 1,
+      explanation: "HNSW builds a hierarchy of proximity graphs. The top layers contain fewer nodes with long-range connections (for quickly narrowing down the search area), while lower layers have more nodes with short-range connections (for fine-grained, precise nearest-neighbor results)."
+    },
+    {
+      q: "How does IVFFlat index differ from HNSW for vector similarity search?",
+      options: [
+        "IVFFlat is always faster than HNSW",
+        "IVFFlat partitions vectors into clusters (inverted lists) and searches only the nearest clusters, while HNSW uses a navigable graph structure",
+        "IVFFlat gives exact results while HNSW gives approximate results",
+        "IVFFlat only supports cosine similarity"
+      ],
+      answer: 1,
+      explanation: "IVFFlat clusters vectors into N lists using k-means. At query time, it only searches the closest 'probes' lists instead of all vectors. HNSW navigates a multi-layer graph. IVFFlat is faster to build but typically has lower recall than HNSW. Both are ANN methods."
+    },
+    {
+      q: "In pgvector, what happens if you run a similarity search WITHOUT an ANN index?",
+      options: [
+        "The query fails with an error",
+        "PostgreSQL performs an exact k-NN search using a sequential scan — accurate but slow for large tables",
+        "PostgreSQL automatically creates a temporary index",
+        "The query returns random results"
+      ],
+      answer: 1,
+      explanation: "Without an ANN index, PostgreSQL falls back to a sequential scan, computing the distance between the query vector and every row in the table. This is exact k-NN — it guarantees correct results but is O(n) and becomes very slow as the table grows."
+    },
+    {
+      q: "What do the pgvector operators <->, <=>, and <#> represent?",
+      options: [
+        "<-> is L2 (Euclidean) distance, <=> is cosine distance, <#> is inner product distance",
+        "They all measure the same distance",
+        "<-> is greater than, <=> is equal, <#> is less than",
+        "They are comparison operators for strings"
+      ],
+      answer: 0,
+      explanation: "pgvector provides three distance operators: <-> (L2/Euclidean distance), <=> (cosine distance), and <#> (negative inner product). Each has corresponding index operator classes: vector_l2_ops, vector_cosine_ops, vector_ip_ops."
+    },
+    {
+      q: "Why does PostgreSQL sometimes ignore an HNSW index and use a sequential scan instead?",
+      options: [
+        "HNSW indexes are always ignored",
+        "The query planner's cost-based optimizer may determine a sequential scan is cheaper for small tables, since index traversal has overhead",
+        "Sequential scans return better results than HNSW",
+        "HNSW can only be used with SELECT *"
+      ],
+      answer: 1,
+      explanation: "PostgreSQL's cost-based query planner compares the estimated cost of using the index vs. a sequential scan. For small tables (like the 10,000-word glove_small), a sequential scan can be cheaper because it avoids index lookup overhead. Running ANALYZE helps the planner make better decisions."
+    },
   ]
 };
