@@ -243,7 +243,20 @@ h2 { text-align: center; margin-bottom: .8rem; }
 .explanation-box strong { color: var(--blue); }
 
 /* ───────────── Buttons ───────────── */
-.question-actions { display: flex; justify-content: flex-end; }
+.question-actions { display: flex; justify-content: flex-end; gap: .8rem; }
+
+.btn-skip {
+  padding: .7rem 1.4rem;
+  border-radius: 8px;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  border: 1px solid var(--orange);
+  background: rgba(255,152,0,.08);
+  color: var(--orange);
+}
+.btn-skip:hover { background: rgba(255,152,0,.18); }
 
 .btn-primary, .btn-secondary {
   padding: .7rem 1.6rem;

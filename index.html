@@ -17,15 +17,16 @@
     <div id="stats-bar" class="stats-bar hidden">
       <span id="stats-correct">✅ 0</span>
       <span id="stats-wrong">❌ 0</span>
+      <span id="stats-skipped">⏭️ 0</span>
       <span id="stats-remaining">📋 0 remaining</span>
-      <span id="stats-score">🎯 0%</span>
+      <span id="stats-score">🎯 0 pts</span>
       <button id="btn-back-to-menu" class="btn-small">← Menu</button>
     </div>
 
     <!-- Category Selection -->
     <div id="menu-screen">
       <h2>Choose a topic to practice</h2>
-      <p class="info-text">The exam has ~25% questions from each category. You need 50% to pass. 2 hours, closed-book.</p>
+      <p class="info-text">Real exam: 24 questions, +2 correct / 0 skip / −1 wrong. Pass = 22 pts (of 48). 2 hours, closed-book.</p>
       <div class="category-grid">
         <button class="category-card" data-category="postgresql">
           <span class="emoji">🐘</span>
@@ -50,7 +51,7 @@
         <button class="category-card category-card--all" data-category="all">
           <span class="emoji">🎯</span>
           <span class="label">Full Exam Simulation</span>
-          <span class="desc">Mixed questions from all topics — just like the real exam</span>
+          <span class="desc">24 mixed questions, real scoring (+2/0/−1), 22 pts to pass</span>
         </button>
       </div>
     </div>
@@ -72,6 +73,7 @@
           <p id="explanation-text"></p>
         </div>
         <div class="question-actions">
+          <button id="btn-skip" class="btn-skip">🤷 I don't know (0 pts)</button>
           <button id="btn-next" class="btn-primary hidden">Next Question →</button>
         </div>
       </div>

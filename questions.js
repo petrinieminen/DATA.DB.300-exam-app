@@ -904,5 +904,181 @@ const QUESTIONS = {
       answer: 1,
       explanation: "A closed-book multiple-choice exam tests whether you understood the concepts (when to embed vs reference, primary key design, query patterns). You need 50% to pass, and it covers all lectures and exercises."
     },
+    {
+      q: "Is NewSQL a new query standard for NoSQL databases?",
+      options: [
+        "Yes — NewSQL replaces SQL with a new query language designed for NoSQL",
+        "No — NewSQL refers to modern relational databases that aim to provide NoSQL-like scalability while keeping SQL and ACID guarantees",
+        "Yes — NewSQL is the official successor to SQL standardized by ISO",
+        "No — NewSQL is a JavaScript-based query language for MongoDB"
+      ],
+      answer: 1,
+      explanation: "NewSQL is NOT a new query language. It refers to a category of modern relational databases (e.g., Google Spanner, CockroachDB, VoltDB) that offer horizontal scalability like NoSQL systems while maintaining full SQL support and ACID transactions."
+    },
+    {
+      q: "What is a quorum in the context of distributed databases?",
+      options: [
+        "A type of database index for fast lookups",
+        "The minimum number of nodes that must agree on a read or write operation for it to be considered successful",
+        "A query language used by Cassandra",
+        "A method of compressing data across nodes"
+      ],
+      answer: 1,
+      explanation: "Quorum (from Latin 'quōrum' — 'of whom') is the minimum number of replica nodes that must respond to a read/write for it to succeed. In Cassandra, QUORUM = (replication_factor / 2) + 1. It balances consistency and availability."
+    },
+    {
+      q: "In Cassandra with a replication factor of 3, what does consistency level QUORUM mean?",
+      options: [
+        "All 3 replicas must respond",
+        "At least 2 out of 3 replicas must acknowledge the operation",
+        "Only 1 replica needs to respond",
+        "The coordinator node decides without consulting replicas"
+      ],
+      answer: 1,
+      explanation: "QUORUM = floor(RF/2) + 1. With RF=3, that's floor(3/2)+1 = 2. So at least 2 of 3 replicas must acknowledge a write (or respond to a read) for it to succeed. This provides strong consistency with some fault tolerance."
+    },
+    {
+      q: "What consistency guarantee do you get if both reads and writes use QUORUM with RF=3?",
+      options: [
+        "Eventual consistency only",
+        "Strong (linearizable) consistency — reads always see the latest write",
+        "No consistency guarantees at all",
+        "Consistency only if all nodes are online"
+      ],
+      answer: 1,
+      explanation: "When W + R > RF (where W=write replicas, R=read replicas, RF=replication factor), reads and writes overlap on at least one node, guaranteeing strong consistency. QUORUM(2) + QUORUM(2) = 4 > 3 = RF."
+    },
+    {
+      q: "What is horizontal scaling (scaling out)?",
+      options: [
+        "Adding more CPU and RAM to a single server",
+        "Adding more servers/nodes to distribute the load",
+        "Increasing the disk size on the primary server",
+        "Upgrading the database software version"
+      ],
+      answer: 1,
+      explanation: "Horizontal scaling (scaling out) means adding more machines to the system. NoSQL databases like Cassandra and MongoDB are designed for this. Vertical scaling (scaling up) means adding more resources to a single machine."
+    },
+    {
+      q: "What is sharding in the context of databases?",
+      options: [
+        "Creating read replicas for fault tolerance",
+        "Splitting and distributing data across multiple servers, each holding a subset of the data",
+        "Encrypting data at rest",
+        "Creating backup copies of the database"
+      ],
+      answer: 1,
+      explanation: "Sharding partitions data across multiple servers (shards). Each shard holds a portion of the total dataset. This enables horizontal scaling — both storage and throughput grow as you add shards."
+    },
+    {
+      q: "What is the difference between sharding and replication?",
+      options: [
+        "They are the same thing",
+        "Sharding splits data across nodes (each holds different data); replication copies the same data across nodes (each holds the same data)",
+        "Sharding is for reads; replication is for writes",
+        "Sharding is a MongoDB feature; replication is a Cassandra feature"
+      ],
+      answer: 1,
+      explanation: "Sharding distributes different partitions of data across nodes for scalability. Replication copies the same data to multiple nodes for fault tolerance and read performance. Most production systems use both."
+    },
+    {
+      q: "How does MongoDB determine which shard stores a document?",
+      options: [
+        "Documents are randomly assigned to shards",
+        "Based on the shard key — MongoDB uses it to route documents to the correct shard",
+        "The application chooses the shard manually",
+        "All documents go to the primary shard first, then are redistributed"
+      ],
+      answer: 1,
+      explanation: "MongoDB uses the shard key to determine document placement. With ranged sharding, ranges of shard key values map to specific shards. With hashed sharding, the key is hashed for even distribution."
+    },
+    {
+      q: "What is the trade-off of using consistency level ONE vs QUORUM in Cassandra?",
+      options: [
+        "ONE is slower but more consistent",
+        "ONE is faster and more available but risks reading stale data; QUORUM is slower but provides stronger consistency",
+        "There is no difference in practice",
+        "QUORUM is faster because it parallelizes reads"
+      ],
+      answer: 1,
+      explanation: "Consistency level ONE only waits for one replica — fast and available even if other nodes are down, but may return stale data. QUORUM waits for majority agreement — slower and less available during failures, but more consistent."
+    },
+    {
+      q: "What does 'eventual consistency' mean?",
+      options: [
+        "Data is always consistent across all nodes",
+        "If no new updates are made, all replicas will eventually converge to the same value",
+        "Consistency is guaranteed only during business hours",
+        "Data is never consistent across nodes"
+      ],
+      answer: 1,
+      explanation: "Eventual consistency means that given enough time without new writes, all replicas will converge to the same state. Reads may temporarily return stale data. This is the trade-off Cassandra makes for high availability (AP in CAP)."
+    },
+    {
+      q: "What is the purpose of a consistent hash ring in distributed databases?",
+      options: [
+        "To encrypt data during transmission",
+        "To distribute data evenly across nodes and minimize data movement when nodes join or leave",
+        "To sort query results in a consistent order",
+        "To ensure all nodes have identical data"
+      ],
+      answer: 1,
+      explanation: "A consistent hash ring maps both data (partition keys) and nodes to positions on a ring. Each node owns a range. When a node joins/leaves, only data in its range needs to move — minimizing disruption."
+    },
+    {
+      q: "Which of the following is NOT a characteristic of NoSQL databases?",
+      options: [
+        "Horizontal scalability",
+        "Schema flexibility",
+        "Strong ACID transactions across all operations by default",
+        "Designed for specific access patterns"
+      ],
+      answer: 2,
+      explanation: "Most NoSQL databases trade strict ACID transactions for scalability and availability. Some support transactions within limited scopes (e.g., MongoDB's multi-document transactions), but it's not the default design philosophy."
+    },
+    {
+      q: "What are the main categories of NoSQL databases?",
+      options: [
+        "Relational, object-oriented, flat-file",
+        "Key-value, document, wide-column, graph",
+        "SQL, NoSQL, NewSQL only",
+        "JSON, XML, CSV"
+      ],
+      answer: 1,
+      explanation: "The four main NoSQL categories are: Key-value (Redis, DynamoDB), Document (MongoDB, CouchDB), Wide-column (Cassandra, HBase), and Graph (Neo4j). Each is optimized for different data models and access patterns."
+    },
+    {
+      q: "What does ACID stand for in database transactions?",
+      options: [
+        "Asynchronous, Concurrent, Isolated, Distributed",
+        "Atomicity, Consistency, Isolation, Durability",
+        "Availability, Consistency, Integrity, Durability",
+        "Atomic, Columnar, Indexed, Distributed"
+      ],
+      answer: 1,
+      explanation: "ACID: Atomicity (all or nothing), Consistency (valid state transitions), Isolation (concurrent transactions don't interfere), Durability (committed data survives crashes). Traditional SQL databases guarantee ACID."
+    },
+    {
+      q: "What does BASE stand for, and how does it relate to NoSQL?",
+      options: [
+        "Basic Availability, Soft-state, Eventual consistency — the NoSQL alternative to ACID",
+        "Binary, Asynchronous, Secure, Encrypted",
+        "Backup, Archive, Sync, Export",
+        "BASE is not a real database concept"
+      ],
+      answer: 0,
+      explanation: "BASE: Basically Available (system always responds), Soft-state (state may change over time without input due to replication), Eventually consistent. It's the opposite philosophy to ACID, favoring availability over strict consistency."
+    },
+    {
+      q: "What is a range query and why are they important for partition key design?",
+      options: [
+        "A query that selects rows within a range of values — efficient on clustering columns but not on partition keys in Cassandra",
+        "A query that counts the total number of rows",
+        "A query that returns random samples",
+        "A query that spans multiple keyspaces"
+      ],
+      answer: 0,
+      explanation: "Range queries (e.g., WHERE year >= 2020 AND year <= 2025) are efficient on clustering columns because data is sorted within a partition. On partition keys, they would require scanning all nodes, which is why ALLOW FILTERING exists (but shouldn't be used)."
+    },
   ]
 };
