@@ -325,6 +325,18 @@ h2 { text-align: center; margin-bottom: .8rem; }
 .review-section { text-align: left; }
 .review-section h3 { margin-bottom: 1rem; text-align: center; }
 
+.review-heading {
+  margin: 1rem 0 .5rem;
+}
+
+.review-heading--wrong { color: var(--red); }
+.review-heading--skipped { color: var(--orange); }
+
+.review-perfect {
+  color: var(--green);
+  text-align: center;
+}
+
 .review-card {
   background: var(--surface);
   border: 1px solid var(--border);

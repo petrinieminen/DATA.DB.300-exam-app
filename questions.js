@@ -828,26 +828,26 @@ const QUESTIONS = {
       explanation: "Query-driven design ensures every read can be served from a single partition lookup. The trade-off is data duplication across tables and more complex writes, but reads are extremely fast and scalable."
     },
     {
-      q: "What is the purpose of a 'proof of concept' (POC) application for a database course?",
+      q: "What does 'schema-on-read' mean in document-oriented database design?",
       options: [
-        "To build a production-ready application",
-        "To demonstrate that a software application can communicate with the database (reads and writes)",
-        "To test Docker container performance",
-        "To design the database schema"
+        "The database requires every document to match a fixed table definition before insertion",
+        "The application interprets flexible document structures when data is queried",
+        "Indexes are created automatically only when a query is executed",
+        "Documents are converted into relational tables before they are returned"
       ],
       answer: 1,
-      explanation: "A POC demonstrates basic connectivity: that an application (e.g., Python CLI) can connect to the database, execute reads (e.g., search movies), and perform writes (e.g., add a movie)."
+      explanation: "Schema-on-read means documents can have flexible structures, and the application/query logic interprets that structure when reading. This flexibility is useful, but it can also create inconsistent documents if design is careless."
     },
     {
-      q: "In the Cassandra design exercise, what's considered an 'excellent' number of tables for the Movie Explorer app?",
+      q: "In the Cassandra design exercise, why was using fewer well-designed tables treated as better than creating one table per screen widget?",
       options: [
-        "11+ tables",
-        "10-8 tables",
-        "6-7 tables",
-        "5 tables"
+        "Because Cassandra charges per table",
+        "Because combining compatible access patterns can reduce unnecessary redundancy while still avoiding ALLOW FILTERING",
+        "Because Cassandra cannot support more than five tables in a keyspace",
+        "Because fewer tables always means less duplicated data"
       ],
-      answer: 3,
-      explanation: "5 tables is 'excellent', 6-7 is 'good', 8-10 has room for improvement, 11+ is poorly designed. Fewer tables (with clever partitioning and wide rows) indicate mastery of wide-column design tricks."
+      answer: 1,
+      explanation: "The exercise used table count as a teaching constraint to encourage careful query-driven design. The goal was not blindly minimizing tables, but combining compatible access patterns without large scans or ALLOW FILTERING."
     },
     {
       q: "Why might you use uuid() or ObjectId() instead of sequential integer IDs in distributed databases?",
@@ -883,26 +883,70 @@ const QUESTIONS = {
       explanation: "Controlled duplication means deliberately denormalizing — e.g., storing a movie's title and poster in both the movies collection and viewings collection. Reads are fast (no join), but updates need to touch multiple places."
     },
     {
-      q: "What are the three database systems covered in this course?",
+      q: "Which document design anti-pattern stores changing data values as field names?",
       options: [
-        "MySQL, Redis, Neo4j",
-        "PostgreSQL (with extensions), Cassandra, MongoDB",
-        "Oracle, DynamoDB, Firebase",
-        "SQLite, CouchDB, HBase"
+        "Data as metadata",
+        "Controlled duplication",
+        "Bounded embedding",
+        "Snapshotting"
       ],
-      answer: 1,
-      explanation: "The course covers PostgreSQL (relational with NoSQL extensions like JSONB, HSTORE, pgvector), Apache Cassandra (wide-column), and MongoDB (document database)."
+      answer: 0,
+      explanation: "Data-as-metadata means values that should be stored as data are instead encoded as field names. This makes documents harder to understand, validate, and query consistently."
     },
     {
-      q: "Why is the exam closed-book with multiple-choice questions?",
+      q: "Why can denormalization improve read latency but hurt storage efficiency and update complexity?",
       options: [
-        "Because the answers are easy to look up",
-        "To test conceptual understanding and design reasoning that you internalized through exercises",
-        "Because the course has no exercises",
-        "To test memorization of exact syntax"
+        "It removes all indexes from the database",
+        "It duplicates data so reads avoid joins/lookups, but copied values consume space and must be kept consistent",
+        "It forces every query to scan all documents",
+        "It turns BASE systems into ACID systems"
       ],
       answer: 1,
-      explanation: "A closed-book multiple-choice exam tests whether you understood the concepts (when to embed vs reference, primary key design, query patterns). You need 50% to pass, and it covers all lectures and exercises."
+      explanation: "NoSQL designs often duplicate data to make important reads fast. The trade-off is more storage, more write work, and possible staleness when duplicated values need to be updated in multiple places."
+    },
+    {
+      q: "Which MongoDB document design choice best avoids scalar heterogeneity?",
+      options: [
+        "Store the same logical field with a consistent shape, such as always using { price, currency } for prices",
+        "Store prices sometimes as numbers, sometimes as strings, and sometimes as nested objects",
+        "Move every scalar value into a separate collection",
+        "Use field names like '120' and '185' to represent item IDs"
+      ],
+      answer: 0,
+      explanation: "Scalar heterogeneity means the same logical field appears with incompatible shapes or types across documents. A consistent representation makes application code, indexes, and queries more predictable."
+    },
+    {
+      q: "Why is unbounded embedding usually a document database anti-pattern?",
+      options: [
+        "Embedded arrays cannot be queried",
+        "A document can grow indefinitely, making reads/writes slower and eventually hitting document size limits",
+        "Embedding always prevents indexing",
+        "It makes every read require a distributed transaction"
+      ],
+      answer: 1,
+      explanation: "Embedding is useful for bounded data read together with the parent. Unbounded data such as reviews or comments should usually be referenced or bucketed so a single document does not grow without limit."
+    },
+    {
+      q: "From a sustainability perspective, why can removing unnecessary redundancy matter?",
+      options: [
+        "It can reduce storage needs and the energy used to store and process data",
+        "It makes all databases eventually consistent",
+        "It removes the need for backups",
+        "It guarantees lower latency for every query"
+      ],
+      answer: 0,
+      explanation: "The lecture connects database design with storage requirements and energy consumption. Redundancy can be justified for read performance, but unnecessary copies increase storage and operational cost."
+    },
+    {
+      q: "When choosing a DBMS, why should expected read/write ratio and access patterns matter?",
+      options: [
+        "Because every DBMS has identical consistency and scaling behavior",
+        "Because different systems optimize for different workloads, query shapes, consistency needs, and scaling strategies",
+        "Because query language syntax is the only meaningful difference between DBMSs",
+        "Because NoSQL systems should only be used for analytics"
+      ],
+      answer: 1,
+      explanation: "The lectures emphasize choosing a DBMS based on workload and use case: read/write ratio, concurrency, consistency needs, scaling requirements, business domain, and surrounding system components."
     },
     {
       q: "Is NewSQL a new query standard for NoSQL databases?",
@@ -1100,7 +1144,7 @@ const QUESTIONS = {
         "ANN uses less storage space than k-NN"
       ],
       answer: 1,
-      explanation: "Exact k-NN requires comparing against all N vectors (O(n)). For millions of high-dimensional vectors, this is prohibitively slow. ANN indexes like HNSW reduce search to O(log n) with results that are usually 95-99% as accurate — a very worthwhile trade-off."
+      explanation: "Exact k-NN requires comparing against all N vectors (O(n)). For large high-dimensional datasets, this can be too slow. ANN indexes such as HNSW can be much faster in practice by trading exactness for recall and lower latency."
     },
     {
       q: "Which pgvector index types provide Approximate Nearest Neighbor (ANN) search?",
